@@ -10,7 +10,9 @@
         <th>Checkin Modify</th>
         <th>Checkout</th>
         <th>Checkout Modify</th>
+        <th>Breaktime</th>
         <th>Working hour</th>
+        <th>Missing hour</th>
         <th>Overtime hour</th>
         <th>Note</th>
         <th>Action</th>
@@ -21,21 +23,18 @@
         <tr>
         <th>{{$item->date}}</th>
         <th>{{$item->chekin}}</th>
-        <th>Checkin Modify</th>
+        <th>{{$item->chekin_modify}}</th>
         <th>{{$item->checkout}}</th>
-        <th>Checkout Modify</th>
-        @php(
-            $workingTime = $item->checkout-$item->chekin - 1
-            // $overTime = 8 - $item->checkout - $item->chekin - 1
-        )
-        <th>{{$workingTime}}</th>
-        <th>{{$overTime}}</th>
-        <th>Note</th>
-        <th>Action</th>
+        <th>{{$item->checkout_modify}}</th>
+        <th>{{$item->break_time}}</th>
+        <th>{{$item->working_time}}</th>
+        <th>{{$item->missing_time}}</th>
+        <th>{{$item->over_time}}</th>
+        <th></th>
+        <th></th>
             <td>
                 <div class='btn-group'>
-                    {{-- <a href="{{route('monthly', $item->month)}}" class='btn btn-default btn-xs'><i class="fas fa-eye"></i></a> --}}
-                    {{-- <a href="{{ route('admin.services.edit', $item->group) }}" class='btn btn-default btn-xs'><i class="far fa-edit"></i></a> --}}
+                    <a href="{{route('dateDetailEdit',[$item->date])}}" class='btn btn-default btn-xs'><i class="fas fa-eye"></i></a>
                 </div>
             </td>
         </tr>

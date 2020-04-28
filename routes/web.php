@@ -19,4 +19,7 @@ Route::post('/login/checkLogin', 'LoginController@checkLogin') -> name('checkLog
 Route::get('/home', 'HomeController@index') -> name('index');
 Route::get('/calendar', 'CalendarController@index') -> name('index');
 Route::get('/monthlyTimesheet', 'MonthlyTimesheetController@index') -> name('index');
-Route::get('/monthly{year}/{month}', 'MonthlyTimesheetController@monthly') -> name('monthly');
+Route::get('/monthlyList{year}/{month}', 'MonthlyTimesheetController@monthlyList') -> name('monthlyList');
+Route::get('/dateDetailEdit{date}', 'MonthlyTimesheetController@dateDetailEdit') -> name('dateDetailEdit');
+Route::post('/dateDetailEditSave', 'MonthlyTimesheetController@dateDetailEditSave') -> name('dateDetailEditSave');
+
