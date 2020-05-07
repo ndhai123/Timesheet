@@ -24,6 +24,7 @@ class AdminController extends Controller
 
     public function modifyRequest(){
         $listRequest = CheckinCheckoutModel::where('status', 1)->get();
+        //dd($listRequest);
         return view('admin/dateDetail')->with(['data' => $listRequest]);
     }
 
@@ -48,16 +49,13 @@ class AdminController extends Controller
             }
         }
 
-        $start = strtotime('23:00:00');
-        $end = strtotime('12:00:00');
-
-        dd(date('h:i:s',$start-strtotime($dateDetail->working_time)));
-
         if($dateDetail->break_time_modify !=null){
             $workingTime = $workingTime - strtotime($dateDetail->break_time_modify);
         }else{
             $workingTime = $workingTime - strtotime($dateDetail->break_time);
         }
+
+        //dd(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00')));
 
         if(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00'))){
             $overTime = $workingTime - strtotime('08:00:00');
@@ -74,13 +72,13 @@ class AdminController extends Controller
         $dateDetail->status = '0';
         $dateDetail->working_time = date('h:i:s', $workingTime);
 
-        if($missingTime > 0){
+        if($missingTime != 0){
             $dateDetail->missing_time = date('h:i:s', $missingTime);
         }else{
             $dateDetail->missing_time = NULL;
         }
 
-        if($overTime > 0){
+        if($overTime != 0){
             $dateDetail->over_time = date('h:i:s', $overTime);
         }else{
             $dateDetail->over_time = NULL;

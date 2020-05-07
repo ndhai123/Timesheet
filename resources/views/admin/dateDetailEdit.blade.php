@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('admin.layout.main')
 
 @section('content')
 @if ($message = Session::get('success'))
@@ -7,7 +7,7 @@
         <strong>{{ $message }}</strong>
 </div>
 @endif
-
+    @if($data)
 
         @if($data->date)
         <div class="form-group">
@@ -91,6 +91,7 @@
         <div class='btn-group'>
             <a href="{{route('reject',[$data->date, $data->user_mail])}}" class='btn btn-default btn-xs'><i class="fa fa-ban"></i></a>
         </div>
+    @endif
 @endsection
 @section('script')
 

@@ -24,6 +24,7 @@ class TimesheetController extends Controller
         $from = date($year.'-'.$month.'-01');
         $to = date($year.'-'.$month.'-31');
         $monthlyDetailt = CheckinCheckoutModel::where('user_mail', $mail)->whereBetween('date', [$from, $to])->get();
+        //dd($monthlyDetailt);
         return view('monthlyDetail') ->with(['data' => $monthlyDetailt]);
     }
 
@@ -40,6 +41,7 @@ class TimesheetController extends Controller
         $dateDetail->checkin_modify = $request->checkin_modify;
         $dateDetail->checkout_modify = $request->checkout_modify;
         $dateDetail->break_time_modify = $request->breaktime_modify;
+        $dateDetail->status = 1;
         $dateDetail->save();
         //dd($dateDetail);
         return redirect(route('dateDetailEdit',[$date])) ->with('success', 'Update Done');

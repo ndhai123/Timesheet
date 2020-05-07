@@ -25,8 +25,8 @@
         <tr>
         <th>{{$item->user_mail}}</th>
         <th>{{$item->date}}</th>
-        <th>{{$item->chekin}}</th>
-        <th>{{$item->chekin_modify}}</th>
+        <th>{{$item->checkin}}</th>
+        <th>{{$item->checkin_modify}}</th>
         <th>{{$item->checkout}}</th>
         <th>{{$item->checkout_modify}}</th>
         <th>{{$item->break_time}}</th>
