@@ -11,16 +11,12 @@ class LoginController extends Controller
         return view('login');
     }
 
-    public function login(){
-        return view('login');
-    }
-
     public function checkLogin(Request $request){
         $check = $request -> only('email', 'password');
-        if(Auth::attempt($check)){
+        if(Auth::attempt($check) && Auth::user()->role == 1){
             return redirect('/home');
         }else{
-            return redirect('/login') ->withErrors('Please check email or password');;
+            return redirect('/') ->withErrors('Please check email or password');;
         }
     }
 }

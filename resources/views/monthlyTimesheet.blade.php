@@ -26,7 +26,6 @@
             <td>
                 <div class='btn-group'>
                     <a href="{{route('monthlyList',[$item->year, $item->month])}}" class='btn btn-default btn-xs'><i class="fas fa-eye"></i></a>
-                    {{-- <a href="{{ route('admin.services.edit', $item->group) }}" class='btn btn-default btn-xs'><i class="far fa-edit"></i></a> --}}
                 </div>
             </td>
         </tr>

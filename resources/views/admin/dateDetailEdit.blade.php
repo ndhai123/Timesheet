@@ -7,8 +7,7 @@
         <strong>{{ $message }}</strong>
 </div>
 @endif
-    <form action="/dateDetailEditSave" method="POST">
-        @csrf
+
 
         @if($data->date)
         <div class="form-group">
@@ -86,11 +85,12 @@
                     </div>
             </div>
         </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Modify</button>
-
-    </form>
-
+        <div class='btn-group'>
+            <a href="{{route('approve',[$data->date, $data->user_mail])}}" class='btn btn-default btn-xs'><i class="fa fa-check"></i></a>
+        </div>
+        <div class='btn-group'>
+            <a href="{{route('reject',[$data->date, $data->user_mail])}}" class='btn btn-default btn-xs'><i class="fa fa-ban"></i></a>
+        </div>
 @endsection
 @section('script')
 
