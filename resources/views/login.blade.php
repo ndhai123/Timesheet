@@ -32,6 +32,7 @@
     <div class="card-body login-card-body">
       <form action="/login/checkLogin" method="POST">
       @csrf
+      
         <div class="input-group mb-3">
           <input type="email" name='email' class="form-control" placeholder="Email">
           <div class="input-group-append">
