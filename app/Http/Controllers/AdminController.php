@@ -25,7 +25,6 @@ class AdminController extends Controller
 
     public function modifyRequest(){
         $listRequest = CheckinCheckoutModel::where('status', 1)->get();
-        //dd($listRequest);
         return view('admin/dateDetail')->with(['data' => $listRequest]);
     }
 
@@ -107,15 +106,16 @@ class AdminController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
+    public function standardWorkingHourByMonth($year, $month, $ignore){
+        $count = 0;
+        $counter = mktime(0, 0, 0, $month, 1, $year);
+        while (date("n", $counter) == $month) {
+            if (in_array(date("w", $counter), $ignore) == false) {
+                $count++;
+            }
+            $counter = strtotime("+1 day", $counter);
+        }
+        return $count * 8;
+        //dd($this->standardWorkingHourByMonth(2020, 2, array(0, 6)));
+    }
 }
