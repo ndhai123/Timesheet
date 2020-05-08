@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CheckinCheckoutModel;
+use App\Models\MonthlyTimesheetModel;
 
 class AdminController extends Controller
 {
@@ -94,4 +95,27 @@ class AdminController extends Controller
         $dateDetail->update();
         return back() ->with('success', 'Rejected');
     }
+
+    public function payslipMonth(){
+        $monthly = MonthlyTimesheetModel::distinct()->get(['user_mail']);
+        return view('admin/chooseMonth')->with('data', $monthly);
+    }
+
+    public function getListMonthPayslip(){
+        $monthly = MonthlyTimesheetModel::distinct()->get(['user_mail']);
+        return view('admin/chooseMonth')->with('data', $monthly);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
