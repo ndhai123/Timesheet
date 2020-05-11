@@ -32,7 +32,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/approveRequest/{date}/{userMail}', 'AdminController@approve')->name('approve');
     Route::get('/rejectRequest/{date}/{userMail}', 'AdminController@reject')->name('reject');
     Route::get('/payslipMonth', 'AdminController@payslipMonth')->name('payslipMonth');
-    Route::get('/getListMonthPayslip', 'AdminController@getListMonthPayslip')->name('getListMonthPayslip');
+    Route::post('/getListMonthPayslip', 'AdminController@getListMonthPayslip')->name('getListMonthPayslip');
     // Route::name('admin.')->group(function () {
 
     //     // Route::resource('about', 'AboutController');

@@ -100,9 +100,12 @@ class AdminController extends Controller
         return view('admin/chooseMonth')->with('data', $monthly);
     }
 
-    public function getListMonthPayslip(){
-        $monthly = MonthlyTimesheetModel::distinct()->get(['user_mail']);
-        return view('admin/chooseMonth')->with('data', $monthly);
+    public function getListMonthPayslip(Request $request){
+        $input = $request->all();
+        return response()->json([
+            'error' => false,
+            'data'  => $input,
+        ], 200);
     }
 
 
@@ -118,4 +121,6 @@ class AdminController extends Controller
         return $count * 8;
         //dd($this->standardWorkingHourByMonth(2020, 2, array(0, 6)));
     }
+
+
 }
