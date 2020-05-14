@@ -1,8 +1,10 @@
 @extends('admin.layout.main')
 
 @section('content')
+<form action="/admin/outputTimesheet" method="POST">
+    @csrf
 <h2>Choose user</h2>
-<select id="listUser" class="browser-default custom-select" onchange="getListMonthPaySlip()">
+<select id="listUser" name='user' class="browser-default custom-select" onchange="getListMonthPaySlip()">
     <option value="" disabled selected>Choose user</option>
     @if($data)
         @foreach ($data as $item)
@@ -12,8 +14,13 @@
 
   </select>
 <h2>Choose Month</h2>
-  <select id="listMonth" class="browser-default custom-select">
+  <select id="listMonth" name='month' class="browser-default custom-select">
   </select>
+
+  <div class="col-4">
+    <button type="submit" class="btn btn-primary btn-block">Timesheet</button>
+  </div>
+</form>
 @endsection
 @section('script')
 <script>
@@ -27,9 +34,15 @@
     $.ajax({
                type:'POST',
                url:'/admin/getListMonthPayslip',
-               data: x,
+               data:{'user': x},
                success:function(data) {
-                  alert("OK");
+                var x = document.getElementById("listMonth");
+                data.data.forEach(element => {
+                   var option = document.createElement("option");
+                    option.text = element.year+"/"+element.month;
+                    option.value = element.year+"/"+element.month;
+                    x.add(option);
+                });
                }
             });
   }
