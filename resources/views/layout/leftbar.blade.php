@@ -36,11 +36,19 @@
               </p>
             </a>
           </li>
-            <a href="/monthlyTimesheet" class="nav-link">
+            <a href="/admin/modifyRequest" class="nav-link">
               <i class="nav-icon far fa-circle text-info"></i>
-              <p>TimeSheet</p>
+              <p>Modify Request</p>
             </a>
           </li>
+
+        </li>
+        <a href="/admin/payslipMonth" class="nav-link">
+          <i class="nav-icon far fa-circle text-info"></i>
+          <p>Payslip</p>
+        </a>
+      </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
