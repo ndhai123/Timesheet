@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <form action="/checkin" method="post">
+    <form action="/admin/checkin" method="post">
         @csrf
 		<div>
 
@@ -16,7 +16,7 @@
 		</div>
 	</form>
 
-	<form action="/checkout" method="post">
+	<form action="/admin/checkout" method="post">
         @csrf
 	    <div>
 

@@ -42,12 +42,19 @@
             </a>
           </li>
 
-        </li>
-        <a href="/admin/payslipMonth" class="nav-link">
-          <i class="nav-icon far fa-circle text-info"></i>
-          <p>Payslip</p>
-        </a>
-      </li>
+          </li>
+          <a href="/admin/payslipMonth" class="nav-link">
+            <i class="nav-icon far fa-circle text-info"></i>
+            <p>Payslip</p>
+          </a>
+         </li>
+
+         </li>
+          <a href="/admin/checkinCheckout" class="nav-link">
+            <i class="nav-icon far fa-circle text-info"></i>
+            <p>CheckinCheckout</p>
+          </a>
+         </li>
 
         </ul>
       </nav>
