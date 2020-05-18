@@ -34,7 +34,8 @@
 <script src="/assets/plugins/fullcalendar-timegrid/main.min.js"></script>
 <script src="/assets/plugins/fullcalendar-interaction/main.min.js"></script>
 <script src="/assets/plugins/fullcalendar-bootstrap/main.min.js"></script>
-
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 
 </head>
 <body class="hold-transition sidebar-mini">
@@ -163,7 +164,7 @@
   </nav>
   <!-- /.navbar -->
 
-@include('layout.leftbar')
+@include('admin.layout.leftbar')
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -213,7 +214,6 @@
 <!-- AdminLTE App -->
 <script src="/assets/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/assets/dist/js/demo.js"></script>
 @yield('script')
 </body>
 </html>

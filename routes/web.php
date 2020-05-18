@@ -21,6 +21,11 @@ Route::get('/calendar', 'CalendarController@index') -> name('index');
 Route::get('/monthlyTimesheet', 'TimesheetController@index') -> name('index');
 Route::get('/monthlyList{year}/{month}', 'TimesheetController@monthlyList') -> name('monthlyList');
 Route::get('/dateDetailEdit{date}', 'TimesheetController@dateDetailEdit') -> name('dateDetailEdit');
+Route::get('/newLeave', 'DayOffController@getNewLeave') -> name('newLeave');
+
+Route::post('/getshowLeave', 'DayOffController@postCountLeave')->name('postCountLeave');
+Route::post('/getCountDay', 'DayOffController@postCountDay')->name('postCountDay');
+Route::post('/newLeave', 'DayOffController@postLeave')->name('post-leave');
 Route::post('/dateDetailEditSave', 'TimesheetController@dateDetailEditSave') -> name('dateDetailEditSave');
 
 Route::prefix('admin')->middleware('auth')->group(function () {
@@ -32,26 +37,18 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/approveRequest/{date}/{userMail}', 'AdminController@approve')->name('approve');
     Route::get('/rejectRequest/{date}/{userMail}', 'AdminController@reject')->name('reject');
     Route::get('/payslipMonth', 'AdminController@payslipMonth')->name('payslipMonth');
+    Route::get('/checkinCheckout', 'CheckinCheckoutController@getcheckinCheckout');
+    Route::get('/dayOff', 'DayOffController@getDayOff')->name('dayOff');
+    Route::get('/dayOff-edit/{id}', 'DayOffController@getEdit')->name('dayOff-edit');
+    Route::get('/dayOff-delete/{id}', 'DayOffController@getDelete')->name('dayOff-delete');
+
+
     Route::post('/getListMonthPayslip', 'AdminController@getListMonthPayslip')->name('getListMonthPayslip');
-    Route::post('/outputTimesheet', 'AdminController@outputExel')->name('outputExel');
+    Route::post('/dayOff-edit/{id}', 'DayOffController@postEdit')->name('post-edit');
 
-    // Route::name('admin.')->group(function () {
+    Route::post('/checkin', 'CheckinCheckoutController@postcheckin' )->name('checkin');
+    Route::post('/checkout', 'CheckinCheckoutController@postcheckout')->name('checkout');
 
-    //     // Route::resource('about', 'AboutController');
-
-    //     Route::resource('tab', 'AboutTabController');
-
-    //     Route::resource('services', 'ServiceController');
-
-    //     Route::resource('team', 'TeamController');
-
-    //     Route::resource('slider', 'SliderController');
-
-    //     Route::resource('setting', 'SettingController');
-
-    //     Route::resource('onsite_offshore', 'OnsiteOffshoreController');
-
-    // });
 });
 
 
