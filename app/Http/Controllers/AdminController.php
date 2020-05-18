@@ -9,11 +9,7 @@ use App\Models\MonthlyTimesheetModel;
 use App\Models\Users;
 use PhpOffice\PhpSpreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-
-
-
-
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class AdminController extends Controller
@@ -64,8 +60,6 @@ class AdminController extends Controller
             $workingTime = $workingTime - strtotime($dateDetail->break_time);
         }
 
-        //dd(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00')));
-
         if(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00'))){
             $overTime = $workingTime - strtotime('08:00:00');
         }else{
@@ -112,7 +106,6 @@ class AdminController extends Controller
     public function getListMonthPayslip(Request $request){
         $input = $request->user;
         $listMonth = MonthlyTimesheetModel::where('user_mail', $input)->get();
-        //dd($input);
         return response()->json([
             'error' => false,
             'data'  => $listMonth,
@@ -130,7 +123,6 @@ class AdminController extends Controller
             $counter = strtotime("+1 day", $counter);
         }
         return $count * 8;
-        //dd($this->standardWorkingHourByMonth(2020, 2, array(0, 6)));
     }
 
 
@@ -144,17 +136,21 @@ class AdminController extends Controller
 
     // }
 
-    public function outputExel(Request $request){
+
+
+    public function createTimesheet(Request $request){
         $spreadsheet = IOFactory::load('assets/Timesheet.xlsx');
 
+        $userMail = $request->user;
         $year = explode("/",$request->month)[0];
         $month = explode("/",$request->month)[1];
-        $userMail = $request->user;
-
         $from = date($year.'-'.$month.'-01');
         $to = date($year.'-'.$month.'-31');
         $userDetail = Users::where("email", $userMail)->first();
         $detail = CheckinCheckoutModel::where('user_mail', $userMail)->whereBetween('date', [$from, $to])->orderBy( 'date' )->get();        // month
+
+        $fileName = "勤務表&交通費申請書_".$userDetail->name."_".$year.$month.".xls";
+
         // month
         $spreadsheet->getActiveSheet()->setCellValue('A5', (int) $month);
         // name
@@ -195,20 +191,20 @@ class AdminController extends Controller
                         $spreadsheet->getActiveSheet()->setCellValue('D'.$row, date('H:i',strtotime($detail[$date]->checkout)));
                         $spreadsheet->getActiveSheet()->setCellValue('E'.$row, date('H:i',strtotime($detail[$date]->break_time)));
                     }
-                    echo date('h:i',strtotime($detail[$date]->checout));
                     $spreadsheet->getActiveSheet()->setCellValue('F'.$row,'=TIMEVALUE("'.date('H:i',strtotime($detail[$date]->working_time)).'")');
                     $date = $date + 1;
                 }
-
             }
-
-
         }
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($fileName);
+        return $fileName;
+    }
 
-        $writer->save("demohai.xlsx");
-        echo 'OK';
+    public function outputExel(Request $request){
+        $fileName = $this->createTimesheet($request);
+       return response()->download(public_path($fileName));
     }
 
 }
