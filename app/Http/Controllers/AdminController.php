@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CheckinCheckoutModel;
 use App\Models\MonthlyTimesheetModel;
+use App\Models\Users;
+use PhpOffice\PhpSpreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class AdminController extends Controller
 {
@@ -18,7 +23,7 @@ class AdminController extends Controller
         if(Auth::attempt($check) && Auth::user()->role == 1){
             return view('admin/home');
         }else{
-            return redirect('admin/index') ->withErrors('Please check email or password');
+            return redirect('admin/index') ->withErrors('Please check email or password');;
         }
     }
 
@@ -54,8 +59,6 @@ class AdminController extends Controller
         }else{
             $workingTime = $workingTime - strtotime($dateDetail->break_time);
         }
-
-        //dd(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00')));
 
         if(date('h:i:s',$workingTime) > date('h:i:s',strtotime('08:00:00'))){
             $overTime = $workingTime - strtotime('08:00:00');
@@ -96,19 +99,19 @@ class AdminController extends Controller
     }
 
     public function payslipMonth(){
-        $monthly = MonthlyTimesheetModel::distinct()->get(['user_mail']);
-        return view('admin/chooseMonth')->with('data', $monthly);
+        $listUser = MonthlyTimesheetModel::distinct()->get(['user_mail']);
+        return view('admin/chooseMonthAndUser')->with('data', $listUser);
     }
 
     public function getListMonthPayslip(Request $request){
         $input = $request->user;
         $listMonth = MonthlyTimesheetModel::where('user_mail', $input)->get();
-        //dd($input);
         return response()->json([
             'error' => false,
             'data'  => $listMonth,
         ], 200);
     }
+
 
     public function standardWorkingHourByMonth($year, $month, $ignore){
         $count = 0;
@@ -120,24 +123,88 @@ class AdminController extends Controller
             $counter = strtotime("+1 day", $counter);
         }
         return $count * 8;
-        //dd($this->standardWorkingHourByMonth(2020, 2, array(0, 6)));
     }
-    // public function incomeTaxCalculation()
-    // {
-    //     $sum = 0;
-    //     $taxMoney = 0;
-    //     $money = 0;
-    //    if($money<88000){
-    //     $sum =0;
-    //    }
-    //    else if($money >=88000){
-    //        $sum =130;
-    //        $taxMoney=3200;
-    //        if($money=88000 && $money=+20000){
-    //         $sum = $sum+50;
-    //         dd($sum);
-    //     }
-    //    }
+
+
+    // public function caclPayslip($year, $month, $user){
+    //     $monthlyDetail = MonthlyTimesheetModel::where('user_mail', $user)->where('year', $year)->where('month', $month)->get();
+
+    //     $payslipModel = new PayslipModel();
+    //     $payslipModel->user_mail = $user;
+    //     $payslipModel->year = $year;
+    //     $payslipModel->month = $month;
+
     // }
+
+
+
+    public function createTimesheet(Request $request){
+        $spreadsheet = IOFactory::load('assets/Timesheet.xlsx');
+
+        $userMail = $request->user;
+        $year = explode("/",$request->month)[0];
+        $month = explode("/",$request->month)[1];
+        $from = date($year.'-'.$month.'-01');
+        $to = date($year.'-'.$month.'-31');
+        $userDetail = Users::where("email", $userMail)->first();
+        $detail = CheckinCheckoutModel::where('user_mail', $userMail)->whereBetween('date', [$from, $to])->orderBy( 'date' )->get();        // month
+
+        $fileName = "勤務表&交通費申請書_".$userDetail->name."_".$year.$month.".xls";
+
+        // month
+        $spreadsheet->getActiveSheet()->setCellValue('A5', (int) $month);
+        // name
+        $spreadsheet->getActiveSheet()->setCellValue('G4', $userDetail->name);
+        // number
+        $spreadsheet->getActiveSheet()->setCellValue('G3', $userDetail->number);
+        // amount working date
+        $spreadsheet->getActiveSheet()->setCellValue('H8', count($detail));
+
+        $date = 0;
+        for($row = 8; $row < 39; $row++){
+            if($date < count($detail) && $detail[$date]){
+                $dateOfRow =  $spreadsheet->getActiveSheet()->getCell('A'.$row)->getFormattedValue();
+                if((int)explode("-",$detail[$date]->date)[2]== $dateOfRow){
+                    // approve
+                    if($detail[$date]->status == 0){
+                        if($detail[$date]->checkin_modify){
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$row, date('H:i',strtotime($detail[$date]->checkin_modify)));
+
+                        }else{
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$row, date('H:i',strtotime($detail[$date]->checkin)));
+                        }
+
+                        if($detail[$date]->checkout_modify){
+                            $spreadsheet->getActiveSheet()->setCellValue('D'.$row, date('H:i',strtotime($detail[$date]->checkout_modify)));
+                        }else{
+                            $spreadsheet->getActiveSheet()->setCellValue('D'.$row, date('H:i',strtotime($detail[$date]->checkout)));
+                        }
+
+                        if($detail[$date]->break_time_modify){
+                            $spreadsheet->getActiveSheet()->setCellValue('E'.$row, date('h:i',strtotime($detail[$date]->break_time_modify)));
+
+                        }else{
+                            $spreadsheet->getActiveSheet()->setCellValue('E'.$row, date('H:i',strtotime($detail[$date]->break_time)));
+                        }
+                    }else{
+                        $spreadsheet->getActiveSheet()->setCellValue('C'.$row, date('H:i',strtotime($detail[$date]->checkin)));
+                        $spreadsheet->getActiveSheet()->setCellValue('D'.$row, date('H:i',strtotime($detail[$date]->checkout)));
+                        $spreadsheet->getActiveSheet()->setCellValue('E'.$row, date('H:i',strtotime($detail[$date]->break_time)));
+                    }
+                    $spreadsheet->getActiveSheet()->setCellValue('F'.$row,'=TIMEVALUE("'.date('H:i',strtotime($detail[$date]->working_time)).'")');
+                    $date = $date + 1;
+                }
+            }
+        }
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($fileName);
+        return $fileName;
+    }
+
+    public function outputExel(Request $request){
+        $fileName = $this->createTimesheet($request);
+       return response()->download(public_path($fileName));
+    }
 
 }
