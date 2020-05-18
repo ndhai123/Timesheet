@@ -1,8 +1,10 @@
 @extends('admin.layout.main')
 
 @section('content')
+<form action="/admin/outputTimesheet" method="POST">
+    @csrf
 <h2>Choose user</h2>
-<select id="listUser" class="browser-default custom-select" onchange="getListMonthPaySlip()">
+<select id="listUser" name='user' style="width: 300px;" class="browser-default custom-select" onchange="getListMonthPaySlip()">
     <option value="" disabled selected>Choose user</option>
     @if($data)
         @foreach ($data as $item)
@@ -12,8 +14,13 @@
 
   </select>
 <h2>Choose Month</h2>
-  <select id="listMonth" class="browser-default custom-select">
+  <select id="listMonth" name='month' style="width: 300px;" class="browser-default custom-select">
   </select>
+
+  <div class="col-4">
+    <button type="submit" style="width: 290px;margin-top: 20px;" class="btn btn-primary btn-block">Timesheet</button>
+  </div>
+</form>
 @endsection
 @section('script')
 <script>
@@ -22,22 +29,6 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-//     function getListMonthPaySlip(){
-//     var x = document.getElementById("listUser").value;
-//     $.ajax({
-//                type:'POST',
-//                url:'/admin/getListMonthPayslip',
-//                data:{'user': x},
-//                // lay dc du lieu
-//                success:function(data) {
-//                    console.log(data);
-//                 $("#listMonth").empty();
-//                 $.each(data,function(index,value){
-//                     $("#listMonth").append('<option value="'+index+'">'+data[index]+'</option>');
-//                 });
-//                }
-//             });
-//   }
   function getListMonthPaySlip(){
     var x = document.getElementById("listUser").value;
     $.ajax({
