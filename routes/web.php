@@ -31,6 +31,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/detailApprove/{date}/{userMail}', 'AdminController@detailApprove')->name('detailApprove');
     Route::get('/approveRequest/{date}/{userMail}', 'AdminController@approve')->name('approve');
     Route::get('/rejectRequest/{date}/{userMail}', 'AdminController@reject')->name('reject');
+    Route::get('/payslipMonth', 'AdminController@payslipMonth')->name('payslipMonth');
+    Route::post('/getListMonthPayslip', 'AdminController@getListMonthPayslip')->name('getListMonthPayslip');
+    Route::post('/outputTimesheet', 'AdminController@outputExel')->name('outputExel');
 
     // Route::name('admin.')->group(function () {
 

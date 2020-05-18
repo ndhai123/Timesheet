@@ -27,7 +27,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-header">EXAMPLES</li>
-          <li class="nav-item">
+
+          {{-- <li class="nav-item">
             <a href="/calendar" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
@@ -35,12 +36,29 @@
                 <span class="badge badge-info right">2</span>
               </p>
             </a>
-          </li>
-            <a href="modifyRequest" class="nav-link">
+          </li> --}}
+
+          <li class="nav-item">
+            <a href="/admin/modifyRequest" class="nav-link">
               <i class="nav-icon far fa-circle text-info"></i>
               <p>Modify Request</p>
             </a>
           </li>
+
+        <li class="nav-item">
+            <a href="/admin/payslipMonth" class="nav-link">
+            <i class="nav-icon far fa-circle text-info"></i>
+            <p>TimeSheet</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/admin/payslipMonth" class="nav-link">
+            <i class="nav-icon far fa-circle text-info"></i>
+            <p>Payslip</p>
+            </a>
+        </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
