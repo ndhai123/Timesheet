@@ -145,11 +145,15 @@ class AdminController extends Controller
         $userMail = $request->user;
         $year = explode("/",$request->month)[0];
         $month = explode("/",$request->month)[1];
+        // handle for 1 character month
+        if(strlen($month)==1){
+            $month = '0'.$month;
+        }
         $from = date($year.'-'.$month.'-01');
-        $to = date($year.'-'.$month.'-31');
+        $to = date( $year.'-'.$month.'-31');
         $userDetail = Users::where("email", $userMail)->first();
-        $detail = CheckinCheckoutModel::where('user_mail', $userMail)->whereBetween('date', [$from, $to])->orderBy( 'date' )->get();        // month
-
+        //$detail = CheckinCheckoutModel::where('user_mail', $userMail)->whereBetween('date', [$from, $to])->orderBy( 'date' )->get();        // month
+        $detail = CheckinCheckoutModel::get();
         $fileName = "勤務表&交通費申請書_".$userDetail->name."_".$year.$month.".xls";
 
         // month
@@ -225,7 +229,7 @@ class AdminController extends Controller
         $checkEmail = User::where("email", $request->email)->get();
         $checkNumber = User::where("number", $request->number)->get();
         if($checkEmail || $checkNumber){
-            return back() ->with('error', 'user email is exist');
+            return back() ->with('error', 'User email or number is exist');
         }
 
         $user = new Users();

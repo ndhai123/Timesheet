@@ -41,6 +41,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dayOff', 'DayOffController@getDayOff')->name('dayOff');
     Route::get('/dayOff-edit/{id}', 'DayOffController@getEdit')->name('dayOff-edit');
     Route::get('/dayOff-delete/{id}', 'DayOffController@getDelete')->name('dayOff-delete');
+    Route::post('/outputTimesheet', 'AdminController@outputExel')->name('outputExel');
 
 
     Route::post('/getListMonthPayslip', 'AdminController@getListMonthPayslip')->name('getListMonthPayslip');
