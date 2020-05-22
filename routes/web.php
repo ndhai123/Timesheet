@@ -18,11 +18,17 @@ Route::get('/login', 'LoginController@login') -> name('login');
 Route::post('/login/checkLogin', 'LoginController@checkLogin') -> name('checkLogin');
 Route::get('/home', 'HomeController@index') -> name('index');
 Route::get('/calendar', 'CalendarController@index') -> name('index');
+Route::get('/showEvent', 'CalendarController@getEvent') -> name('showEvent');
+Route::get('/event-add', 'CalendarController@getAddEvent')->name('event-add');
+Route::get('/event-edit/{id}', 'CalendarController@getEdit')->name('event-edit');
+Route::get('/event-delete/{id}', 'CalendarController@getDeleteCalendar')->name('event-delete');
 Route::get('/monthlyTimesheet', 'TimesheetController@index') -> name('index');
 Route::get('/monthlyList{year}/{month}', 'TimesheetController@monthlyList') -> name('monthlyList');
 Route::get('/dateDetailEdit{date}', 'TimesheetController@dateDetailEdit') -> name('dateDetailEdit');
 Route::get('/newLeave', 'DayOffController@getNewLeave') -> name('newLeave');
 
+Route::post('/event-add', 'CalendarController@postAddEvent')->name('post-add');
+Route::post('/event-edit/{id}', 'CalendarController@postEdit')->name('post-edit');
 Route::post('/getshowLeave', 'DayOffController@postCountLeave')->name('postCountLeave');
 Route::post('/getCountDay', 'DayOffController@postCountDay')->name('postCountDay');
 Route::post('/newLeave', 'DayOffController@postLeave')->name('post-leave');

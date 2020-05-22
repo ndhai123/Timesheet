@@ -18,7 +18,7 @@ class CreateNewLeaveTable extends Migration
             $table->bigIncrements('id');
             $table->string('user_mail')->nullable();
             $table->String('type_leave')->nullable();
-            $table->integer('duration')->nullable();
+            $table->float('duration')->nullable();
             $table->date('start_day')->nullable();
             $table->date('end_day')->nullable();
             $table->string('paitial_day')->nullable();

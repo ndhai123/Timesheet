@@ -8,7 +8,7 @@
             <label for="" class="col-2 col-form-label">Leave Type</label>
             <div class="col-10">
 
-                <select name="type_leave" class="form-control" id="listLeave" onchange="getshowLeave()">
+                <select name="type_leave" class="form-control" id="listLeave" onchange="getshowLeave()" required>
                     <option disabled selected value> -- select an option -- </option>
                     <option value="1">Paid Leave</option>
                     <option value="2">Unpaid Leave</option>
@@ -31,19 +31,20 @@
           <div class="form-group row">
             <label for="example-date-input" class="col-2 col-form-label" >Strat Date</label>
             <div class="col-10">
-            <input class="form-control" id="day" type="date" value="{{date('Y-m-d')}}" name="start_day" onchange="getCountDay()">
+            <input class="form-control" id="startDate" type="date" value="{{date('Y-m-d')}}" name="start_day" onchange="getCountDay()" required>
             </div>
           </div>
           <div class="form-group row">
             <label for="example-date-input" class="col-2 col-form-label">End Date</label>
             <div class="col-10">
-            <input class="form-control" id="day" type="date" value="{{date('Y-m-d')}}" name="end_day" onchange="getCountDay()">
+            <input class="form-control" id="endDate" type="date"  value="{{date('Y-m-d')}}" name="end_day" onchange="getCountDay()"   required>
             </div>
           </div>
           <div class="form-group row">
             <label for="" class="col-2 col-form-label">Paitial Day</label>
             <div class="col-10">
-                <select name="type_day" class="form-control">
+                <select id="type_leave" name="typeLeave" class="form-control" onchange="getCountDay()" required>
+                
                     <option value="1">All Day</option>
                     <option value="2">morning day</option>
                     <option value="3">Afternoon</option>
@@ -54,7 +55,7 @@
           <div class="form-group row">
             <label for="example-email-input" class="col-2 col-form-label">Duration</label>
             <div class="col-10">
-            <input class="form-control" type="text"  value="" name="duration" id="daration"  disabled>
+            <input class="form-control" type="text" id="duration" value="" name="duration" id="daration"  disabled>
             </div>
           </div>
           <div class="form-group row">
@@ -67,7 +68,7 @@
       <div class="form-group row">
         <div class="offset-sm-2 col-sm-10">
           <button type="submit" class="btn btn-primary">Submit</button>
-          <button type="submit-1" class="btn btn-danger">Cancel</button>
+          <a href="/newLeave"><button type="submit-1" class="btn btn-danger">Cancel</button></a>
         </div>
       </div>
     </form>
@@ -81,46 +82,32 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-//     function getListMonthPaySlip(){
-//     var x = document.getElementById("listUser").value;
-//     $.ajax({
-//                type:'POST',
-//                url:'/admin/getListMonthPayslip',
-//                data:{'user': x},
-//                // lay dc du lieu
-//                success:function(data) {
-//                    console.log(data);
-//                 $("#listMonth").empty();
-//                 $.each(data,function(index,value){
-//                     $("#listMonth").append('<option value="'+index+'">'+data[index]+'</option>');
-//                 });
-//                }
-//             });
-//   }
+
   function getshowLeave(){
     var x = document.getElementById("listLeave").value;
     $.ajax({
                type:'POST',
                url:'/getshowLeave',
                data:{'type_leave': x},
-               success:function(data) {
+               success:function(data) {               
                 $('#Day').val(data.data);
-               }
+                }
             });
   }
-  $(document).ready(function(){
-  $("#Day").onchange(function postinput(){ // Problem 1: change(
-    var x = $(this).value; // Problem 2: $(this).val();
-    $.ajax
-        ({
-            url: 'getCountDay',
-            data: {matchvalue: x},
-            type: 'post',
-            success:function(data) {
-                $('#Day').val(data.data);
-               }
-        });
-  });
-});
+  function getCountDay(){
+    var x = document.getElementById("startDate").value;
+    var y = document.getElementById("endDate").value;
+     var z = document.getElementById("type_leave").value;
+    $.ajax({
+      type:'POST',
+             url:'/getCountDay',
+             data:{'start_day': x,
+                   'end_day' : y,
+                   'typeLeave': z },
+               success:function(data) {               
+               $('#duration').val(data.data);
+                }
+    });
+  }
 </script>
 @endsection

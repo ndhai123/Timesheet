@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DaysOffModel;
 use App\Models\NewLeaveModel;
+use App\Models\CalendarModel;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,11 +26,90 @@ class DayOffController extends Controller
     }
     public function getDelete($id){
         DaysOffModel::find($id)->delete();
-         return redirect('/');
+         return redirect()->back();
     }
     public function getNewLeave(){
         $dayOff = DaysOffModel::where('user_mail',Auth::user()->email)->get();
         return view('newLeave')->with('dayoff',$dayOff);
+    }
+    public function postCountDay(Request $request){
+       if(strtotime( $request->start_day)<=strtotime($request->end_day)){
+        if($request->typeLeave == 1 ){
+            $showstart = new DateTime($request->start_day);
+            $showend = new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
+            $interval = $datetime1->diff($datetime2);
+            $showdays = 0;
+            if($datetime1 == $datetime2 ){
+                $showdays =1;
+            }
+            for($i=0; $i<=$interval->d; $i++){
+                $datetime1->modify('+1 day');
+                $weekday = $datetime1->format('w');
+
+                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
+                    $showdays++;  
+                }
+                
+            }
+            $showdays=$showdays-count($showCalendar);
+        }
+         if($request->typeLeave == 2 ){
+            $showstart = new DateTime($request->start_day);
+            $showend = new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();
+            $showdays = 0;           
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
+            $interval = $datetime1->diff($datetime2);
+            $showdays = 0;
+            if($datetime1 == $datetime2 ){
+                $showdays =1;
+            }
+            for($i=0; $i<=$interval->d; $i++){
+                $datetime1->modify('+1 day');
+                $weekday = $datetime1->format('w');
+
+                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
+                    $showdays++;  
+                }
+                
+            }
+            $showdays=$showdays/2;
+        }
+         if($request->typeLeave == 3 ){
+            $showstart = new DateTime($request->start_day);
+            $showend =  new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();
+            $showdays = 0;           
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
+            $interval = $datetime1->diff($datetime2);
+            $showdays = 0;
+            if($datetime1 == $datetime2 ){
+                $showdays =1;
+            }
+            for($i=0; $i<=$interval->d; $i++){
+                $datetime1->modify('+1 day');
+                $weekday = $datetime1->format('w');
+
+                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
+                    $showdays++;  
+                }
+                
+            }
+            $showdays=$showdays/2;
+        }
+
+       }else{
+           
+       }
+        return response()->json([
+            'error' => false,
+            'data'  => $showdays
+        ], 200);
     }
     public function postCountLeave(Request $request){
 
@@ -68,20 +148,9 @@ class DayOffController extends Controller
             'data'  => $count
         ], 200);
     }
-    public function postCountDay(Request $request){
-
-        // $start_day = $request->star_day;
-        // $end_day =$request->end_day;
-        //  $start_day_ms = $start_day.gettimeofday();
-        //  $end_day_ms = $end_day.gettimeofday();
-        //  $difference_ms = Match.abs($end_day_ms - $start_day_ms);
-        // return response()->json([
-        //     'error' => false,
-        //     'data'  => $start_day
-        // ], 200);
-    }
 
     public function postLeave(Request $request){
+       
         $saveLeave = new NewLeaveModel();
         $saveLeave->user_mail = Auth::user()->email;
         if($request->type_leave == 1){
@@ -106,10 +175,10 @@ class DayOffController extends Controller
         }
         if($request->type_leave == 6){
             $$request->type_leave = $saveLeave->type_leave;
-            $saveLeave->type_leave = 'Funeral Leave(Of Whole Sister Or Brother)';
+            $saveLeave->type_leave ='Funeral Leave(Of Whole Sister Or Brother)';
         }
         if($request->type_leave == 7){
-            $$request->type_leave = $saveLeave->$saveLeave->type_leave;
+            $$request->type_leave = $saveLeave->type_leave;
             $saveLeave->type_leave = 'Funeral Leave( Parent Chiledren)';
         }
         if($request->type_leave == 8){
@@ -120,67 +189,78 @@ class DayOffController extends Controller
             $$request->type_leave = $saveLeave->type_leave;
             $saveLeave->type_leave = 'Special Leave';
         }
-        if($request->type_day == 1 ){
-           $request->type_day = $saveLeave->paitial_day;
-            $saveLeave->paitial_day = 'All Day';
-            $start_day = $request->start_day;
-            $end_day = $request->end_day;
-            $datetime1 = new DateTime($start_day);
-            $datetime2 = new DateTime($end_day);
+        if($request->typeLeave == 1 ){
+            $showstart = new DateTime($request->start_day);
+            $showend = new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();           
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
             $interval = $datetime1->diff($datetime2);
             $days = 0;
+            if($datetime1 == $datetime2 ){
+                $days =1;
+            }
             for($i=0; $i<=$interval->d; $i++){
                 $datetime1->modify('+1 day');
                 $weekday = $datetime1->format('w');
 
                 if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    $days++;
-                }
-
+                    $days++;  
+                }            
             }
+            $days = $days - count($showCalendar);
+            
 
         }
-        if($request->type_day == 2 ){
-           $request->type_day = $saveLeave->paitial_day;
-            $saveLeave->paitial_day = 'Morning';
-            $start_day = $request->start_day;
-            $end_day = $request->end_day;
-            $datetime1 = new DateTime($start_day);
-            $datetime2 = new DateTime($end_day);
-            $interval = $datetime1->diff($datetime2);
-            $days = ($interval->format('%a'))/2;
-            for($i=0; $i<=$interval->d; $i++){
-                $datetime1->modify('+1 day');
-                $weekday = $datetime1->format('w');
-
-                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    ($days++)/2;
-                }
-
-            }
-        }
-        if($request->type_day == 3 ){
-           $request->type_day = $saveLeave->paitial_day;
-            $saveLeave->paitial_day = 'Afternoon';
-            $start_day = $request->start_day;
-            $end_day = $request->end_day;
-            $datetime1 = new DateTime($start_day);
-            $datetime2 = new DateTime($end_day);
+        if($request->typeLeave == 2 ){
+            $showstart = new DateTime($request->start_day);
+            $showend = new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
             $interval = $datetime1->diff($datetime2);
             $days = 0;
+            if($datetime1 == $datetime2 ){
+                $days =1;
+            }
             for($i=0; $i<=$interval->d; $i++){
                 $datetime1->modify('+1 day');
                 $weekday = $datetime1->format('w');
 
                 if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    ($days++)/2;
-                }
-
+                    $days++;  
+                }            
             }
+            $days = ($days - count($showCalendar))/2;
+            
+
         }
-        $saveLeave->start_day = $start_day;
-        $saveLeave->end_day = $end_day;
-        $saveLeave->duration = $days;
+        if($request->typeLeave == 3 ){
+            $showstart = new DateTime($request->start_day);
+            $showend = new DateTime($request->end_day);
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
+            $datetime1 = new DateTime($request->start_day);
+            $datetime2 = new DateTime($request->end_day);
+            $interval = $datetime1->diff($datetime2);
+            $days = 0;
+            if($datetime1 == $datetime2 ){
+                $days =1;
+            }
+            for($i=0; $i<=$interval->d; $i++){
+                $datetime1->modify('+1 day');
+                $weekday = $datetime1->format('w');
+
+                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
+                    $days++;  
+                }            
+            }
+            $days = ($days - count($showCalendar))/2;
+            
+
+        }    
+        $saveLeave->start_day = $request->start_day;
+        $saveLeave->end_day = $request->end_day;
+        $saveLeave->duration = $days;      
         $saveLeave->reason = $request->reason;
         $saveLeave->save();
         return redirect()->back();
