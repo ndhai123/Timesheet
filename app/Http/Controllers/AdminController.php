@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\CheckinCheckoutModel;
 use App\Models\MonthlyTimesheetModel;
 use App\Models\Users;
+use App\User;
 use PhpOffice\PhpSpreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -23,7 +24,7 @@ class AdminController extends Controller
         if(Auth::attempt($check) && Auth::user()->role == 1){
             return view('admin/home');
         }else{
-            return redirect('admin/index') ->withErrors('Please check email or password');;
+            return redirect('admin/index') ->withErrors('Please check email or password');
         }
     }
 
@@ -205,6 +206,36 @@ class AdminController extends Controller
     public function outputExel(Request $request){
         $fileName = $this->createTimesheet($request);
        return response()->download(public_path($fileName));
+    }
+
+    public function getListUser(){
+        $userList = Users::get();
+
+        // dd($userList);
+        return view('admin/listUser')->with('data', $userList);;
+    }
+
+    public function deleteUser($email){
+        $user =User::where('email', $email)->where('role', 1)->delete();
+
+        return back() ->with('success', 'Deleted');
+    }
+
+    public function addUser(Request $request){
+        $checkEmail = User::where("email", $request->email)->get();
+        $checkNumber = User::where("number", $request->number)->get();
+        if($checkEmail || $checkNumber){
+            return back() ->with('error', 'user email is exist');
+        }
+
+        $user = new Users();
+        $user->name = $request->user_name;
+        $user->email = $request->email;
+        $user->password = bcrypt('123456');
+        $user->role = $request->role;
+        $user->number = $request->number;
+        $user->save();
+        return back() ->with('success', 'Created succed');
     }
 
 }

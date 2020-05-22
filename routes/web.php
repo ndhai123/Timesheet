@@ -49,6 +49,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/checkin', 'CheckinCheckoutController@postcheckin' )->name('checkin');
     Route::post('/checkout', 'CheckinCheckoutController@postcheckout')->name('checkout');
 
+    Route::get('/listUser', 'AdminController@getListUser')->name('getListUser');
+    Route::get('/deleteUser{user}', 'AdminController@deleteUser')->name('deleteUser');
+    Route::get('/toAddUser', 'AdminController@AddUser')->name('AddUser');
+    Route::get('/toAddUser', function () { return view('admin/addUser'); })->name('addUser');
+    Route::post('/addUser', 'AdminController@AddUser')->name('AddUser');
+
+
+
+
 });
 
 

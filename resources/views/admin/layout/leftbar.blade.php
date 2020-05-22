@@ -56,6 +56,13 @@
           </a>
          </li>
 
+        </li>
+        <a href="/admin/listUser" class="nav-link">
+          <i class="nav-icon far fa-circle text-info"></i>
+          <p>User</p>
+        </a>
+       </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
