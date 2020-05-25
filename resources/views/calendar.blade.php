@@ -1,6 +1,5 @@
 @extends('layout.main')
 @section('content')
-{{$data}}
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -105,7 +104,7 @@
       event.backgroundColor = '#f39c12';
 
       @foreach($data as $event)
-        eventsList.push({'title': '{{$event->event}}', 'start' : new Date(year, {{$event->month}}-1, {{$event->date}}), 'allDay': 'true', 'backgroundColor':'#f39c12' });
+        eventsList.push({'title': '{{$event->event}}', 'start' : new Date(year, {{explode("-",$event->date)[1]}}-1, {{explode("-",$event->date)[2]}}), 'allDay': 'true', 'backgroundColor':'#f39c12' });
       @endforeach
 
       console.log(eventsList);
@@ -115,7 +114,7 @@
         header    : {
           left  : 'prev,next today',
           center: 'title',
-          right : 'dayGridMonth,timeGridWeek,timeGridDay'
+          right : ''
         },
         //Random default events
         events    : eventsList,
