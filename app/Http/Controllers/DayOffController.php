@@ -24,42 +24,51 @@ class DayOffController extends Controller
         $edit = DaysOffModel::where('id',$id)->update($request->all());
         return redirect('admin/dayOff');
     }
+    
     public function getDelete($id){
         DaysOffModel::find($id)->delete();
          return redirect()->back();
     }
+
     public function getNewLeave(){
         $dayOff = DaysOffModel::where('user_mail',Auth::user()->email)->get();
         return view('newLeave')->with('dayoff',$dayOff);
     }
-    public function postCountDay(Request $request){
-        $showstart = new DateTime($request->start_day);
-        $showend = new DateTime($request->end_day);
-        $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
-        $interval = $showstart->diff($showend);
-        $showdays = 0;
-        for($i=0; $i<=$interval->d; $i++){
-            $showstart->modify('+1 day');
-            $weekday = $showstart->format('w');
 
-            if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                $showdays++;  
+
+    public function postCountDay(Request $request){
+        $startDate = new DateTime($request->start_day);
+        $endDate = new DateTime($request->end_day);
+        $showCalendar = CalendarModel::whereBetween('date', [$startDate, $endDate])->get();          
+        $countDate = 0;
+
+        while($startDate <= $endDate ){ 
+            // find the timestamp value of start date 
+            $timestamp = strtotime($startDate->format('y-m-d'));
+      
+            // find out the day for timestamp and increase particular day 
+            $weekDay = date('l', $timestamp); 
+            if($weekDay != "Saturday" && $weekDay !="Sunday"){
+                $countDate++;
             }
-            
-        }
+            $startDate->modify('+1 day'); 
+        } 
+
         if($request->typeLeave == 1 ){      
             $showdays=$showdays-count($showCalendar);
         }
+
         if($request->typeLeave == 2 ){
             $showdays=($showdays-count($showCalendar))/2;
         }
+
         if($request->typeLeave == 3 ){
             $showdays=($showdays-count($showCalendar))/2;
         }
+
         return response()->json([
             'error' => false,
-            'data'  => $showdays,
-            
+            'data'  => $countDate
         ], 200);
     }
     public function postCountLeave(Request $request){
@@ -207,4 +216,16 @@ class DayOffController extends Controller
         $saveLeave->save();
         return redirect()->back();
     }
+}
+
+function getWeekdayDifference(\DateTime $startDate, \DateTime $endDate)
+{
+    $days = 0;
+
+    while($startDate->diff($endDate)->days > 0) {
+        $days += $startDate->format('N') < 6 ? 1 : 0;
+        $startDate = $startDate->add(new \DateInterval("P1D"));
+    }
+
+    return $days;
 }

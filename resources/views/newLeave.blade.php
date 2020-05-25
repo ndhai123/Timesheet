@@ -104,7 +104,8 @@
              data:{'start_day': x,
                    'end_day' : y,
                    'typeLeave': z },
-               success:function(data) {               
+               success:function(data) {       
+                 console.log(data);        
                $('#duration').val(data.data);
                 }
     });
