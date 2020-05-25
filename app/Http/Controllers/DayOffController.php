@@ -59,8 +59,7 @@ class DayOffController extends Controller
          if($request->typeLeave == 2 ){
             $showstart = new DateTime($request->start_day);
             $showend = new DateTime($request->end_day);
-            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();
-            $showdays = 0;           
+            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
             $datetime1 = new DateTime($request->start_day);
             $datetime2 = new DateTime($request->end_day);
             $interval = $datetime1->diff($datetime2);
