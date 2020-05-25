@@ -38,12 +38,16 @@ class DayOffController extends Controller
         $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
         $interval = $showstart->diff($showend);
         $showdays = 0;
+        $check = 0;
         for($i=0; $i<=$interval->d; $i++){
             $showstart->modify('+1 day');
             $weekday = $showstart->format('w');
 
             if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
                 $showdays++;  
+            }
+        else{
+                $check++;
             }
             
         }
@@ -59,6 +63,7 @@ class DayOffController extends Controller
         return response()->json([
             'error' => false,
             'data'  => $showdays,
+            'check' => $check
             
         ], 200);
     }
@@ -140,65 +145,30 @@ class DayOffController extends Controller
             $request->type_leave = $saveLeave->type_leave;
             $saveLeave->type_leave = 'Special Leave';
         }
-        if($request->typeLeave == 1 ){
-            $showstart = new DateTime($request->start_day);
-            $showend = new DateTime($request->end_day);
-            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();           
-            $datetime1 = new DateTime($request->start_day);
-            $datetime2 = new DateTime($request->end_day);
-            $interval = $datetime1->diff($datetime2);
-            $days = 0;
-            for($i=0; $i<=$interval->d; $i++){
-                $datetime1->modify('+1 day');
-                $weekday = $datetime1->format('w');
+        $showstart = new DateTime($request->start_day);
+        $showend = new DateTime($request->end_day);
+        $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
+        $interval = $showstart->diff($showend);
+        $days = 0;
+        for($i=0; $i<=$interval->d; $i++){
+            // $showstart->modify('+1 day');
+            $weekday = $showstart->format('w');
 
-                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    $days++;  
-                }            
+            if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
+                $showdays++;  
+            }else{
+
             }
-            $days = $days - count($showCalendar);
             
-
+        }
+        if($request->typeLeave == 1 ){
+            $days = $days - count($showCalendar);
         }
         if($request->typeLeave == 2 ){
-            $showstart = new DateTime($request->start_day);
-            $showend = new DateTime($request->end_day);
-            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
-            $datetime1 = new DateTime($request->start_day);
-            $datetime2 = new DateTime($request->end_day);
-            $interval = $datetime1->diff($datetime2);
-            $days = 0;
-            for($i=0; $i<=$interval->d; $i++){
-                $datetime1->modify('+1 day');
-                $weekday = $datetime1->format('w');
-
-                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    $days++;  
-                }            
-            }
             $days = ($days - count($showCalendar))/2;
-            
-
         }
         if($request->typeLeave == 3 ){
-            $showstart = new DateTime($request->start_day);
-            $showend = new DateTime($request->end_day);
-            $showCalendar = CalendarModel::whereBetween('date', [$showstart, $showend])->get();          
-            $datetime1 = new DateTime($request->start_day);
-            $datetime2 = new DateTime($request->end_day);
-            $interval = $datetime1->diff($datetime2);
-            $days = 0;
-            for($i=0; $i<=$interval->d; $i++){
-                $datetime1->modify('+1 day');
-                $weekday = $datetime1->format('w');
-
-                if($weekday !== "0" && $weekday !== "6"){ // 0 for Sunday and 6 for Saturday
-                    $days++;  
-                }            
-            }
             $days = ($days - count($showCalendar))/2;
-            
-
         }    
         $saveLeave->start_day = $request->start_day;
         $saveLeave->end_day = $request->end_day;
